@@ -1,9 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import React from "react";
 import Navbar from "../CommonCompo/Navbar";
+import ReactMarkdown from "react-markdown";
 
 function ChatPage() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      role: "bot",
+      text: "👋 Hi, I’m Dr. AI, your personal medicine assistant. How can I help you today?",
+    },
+  ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
@@ -67,7 +73,7 @@ function ChatPage() {
                         : "bg-gray-700 text-gray-100"
                     }`}
                 >
-                  {msg.text}
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
               </div>
             ))}
