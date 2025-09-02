@@ -12,12 +12,27 @@ function ChatPage() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [thinkingEmoji, setThinkingEmoji] = useState("🤔");
+
   const chatEndRef = useRef(null);
+  const startTimeRef = useRef(null); // ✅ useRef for timing (instant updates)
 
   // Scroll to bottom on new message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  // Cycle through emojis while bot is "thinking"
+  useEffect(() => {
+    if (!loading) return;
+    const emojis = ["🤔", "🧐", "🌀", "💭"];
+    let i = 0;
+    const interval = setInterval(() => {
+      setThinkingEmoji(emojis[i % emojis.length]);
+      i++;
+    }, 700);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -25,6 +40,7 @@ function ChatPage() {
     const newMessage = { role: "user", text: input };
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
+    startTimeRef.current = Date.now(); // ✅ mark start time instantly
     setLoading(true);
 
     try {
@@ -35,7 +51,17 @@ function ChatPage() {
       });
 
       const data = await res.json();
-      const botMessage = { role: "bot", text: data.reply };
+      const duration = Math.max(
+        1,
+        Math.round((Date.now() - startTimeRef.current) / 1000) // ✅ real seconds
+      );
+
+      const botMessage = {
+        role: "bot",
+        text: data.reply,
+        meta: `⏱️ Thought for ${duration} sec`,
+      };
+
       setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
       console.error("Error:", err);
@@ -59,28 +85,40 @@ function ChatPage() {
         <div className="w-full max-w-2xl bg-gray-800 rounded-2xl shadow-lg p-4 flex flex-col h-[500px] overflow-hidden">
           <div className="flex-1 overflow-y-auto pr-2 space-y-3">
             {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
+              <div key={idx}>
                 <div
-                  className={`px-4 py-2 rounded-2xl max-w-[70%] break-words
-                    ${
-                      msg.role === "user"
-                        ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                        : "bg-gray-700 text-gray-100"
-                    }`}
+                  className={`flex ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  <div
+                    className={`px-4 py-2 rounded-2xl max-w-[70%] break-words
+                      ${
+                        msg.role === "user"
+                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                          : "bg-gray-700 text-gray-100"
+                      }`}
+                  >
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  </div>
                 </div>
+                {/* Show meta (thought duration) */}
+                {msg.meta && (
+                  <div
+                    className={`text-xs text-gray-400 mt-1 ${
+                      msg.role === "user" ? "text-right" : "text-left"
+                    }`}
+                  >
+                    {msg.meta}
+                  </div>
+                )}
               </div>
             ))}
+
             {loading && (
               <div className="flex justify-start">
                 <div className="px-4 py-2 rounded-2xl bg-gray-700 text-gray-100 animate-pulse">
-                  Bot is thinking...
+                  Bot is thinking {thinkingEmoji}
                 </div>
               </div>
             )}
