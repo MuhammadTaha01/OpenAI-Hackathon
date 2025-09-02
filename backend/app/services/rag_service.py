@@ -32,11 +32,7 @@ def load_faiss_index():
     return FAISS.load_local(VECTOR_DB_PATH, embeddings, allow_dangerous_deserialization=True)
 
 
-def query_faiss(query: str, k: int = 5, threshold: float = 0.7):
+def query_faiss(query: str, k: int = 10) -> list[str]:
     db = load_faiss_index()
     results = db.similarity_search_with_score(query, k=k)
-
-    # ✅ keep chunks with LOWER distance (better similarity)
-    filtered = [doc.page_content for doc, score in results if score < threshold]
-
-    return filtered
+    return [doc.page_content for doc, _ in results]

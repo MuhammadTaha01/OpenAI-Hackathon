@@ -22,6 +22,13 @@ def get_fallback(query: str) -> str:
     choice = random.choice(FALLBACK_RESPONSES)
     return choice.format(query=query.replace(" ", "+"))
 
+def clean_query(q: str) -> str:
+    """Normalize queries before retrieval (remove 'what is ' etc.)."""
+    q = q.lower().strip()
+    if q.startswith("what is "):
+        q = q.replace("what is ", "").strip()
+    return q
+
 # 🔹 Main LLM query function
 async def query_llm(prompt: str) -> str:
     try:
@@ -30,7 +37,7 @@ async def query_llm(prompt: str) -> str:
             return "👋 Hi, I’m Dr. AI, your personal medical assistant. If you’re having any issue, feel free to ask me!"
 
         # 🔹 Retrieve context from FAISS
-        retrieved_chunks = query_faiss(prompt, k=3)
+        retrieved_chunks = query_faiss(clean_query(prompt), k=3)
         context = "\n\n".join(retrieved_chunks)
 
         if not context:  # No info found
@@ -47,25 +54,28 @@ async def query_llm(prompt: str) -> str:
         """
 
         completion = client.chat.completions.create(
-            model="openai/gpt-oss-120b:fireworks-ai",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """
-                    You are Dr. AI, a virtual medical assistant.
-                    Rules:
-                    - ONLY answer using the provided medical reference text.
-                    - Always respond in this structured format:
-                      1️⃣ Likely condition / explanation
-                      💊 Suggested management (if available in docs)
-                      ⚠️ When to seek medical help
-                    - If multiple possible conditions, list them clearly.
-                    - Always cite the reference document(s) at the end.
-                    """
-                },
-                {"role": "user", "content": augmented_prompt},
+        model="openai/gpt-oss-120b:fireworks-ai",
+        messages=[
+            {
+                "role": "system",
+                "content": f"""
+                You are Dr. AI, a virtual medical assistant.
+
+                Use ONLY the following reference text to answer:
+
+                {context}
+
+                Rules:
+                - Always respond in this structured format:
+                1️⃣ Explanation
+                💊 Suggested management (if available in docs)
+                ⚠️ When to seek medical help
+                - If the reference doesn’t contain an answer, say so.
+                """
+            },
+            {"role": "user", "content": prompt},
             ],
-            max_tokens=300,
+            max_tokens=800,
             temperature=0.6,
         )
 
