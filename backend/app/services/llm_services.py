@@ -34,7 +34,7 @@ async def query_llm(prompt: str) -> str:
     try:
         # Handle greetings gracefully
         if prompt.lower().strip() in ["hi", "hello", "hey"]:
-            return "👋 Hi, I’m Dr. AI, your personal medical assistant. If you’re having any issue, feel free to ask me!"
+            return "👋 Hi, I’m Dr. TahAI, your personal medical assistant. If you’re having any issue, feel free to ask me!"
 
         # 🔹 Retrieve context from FAISS
         retrieved_chunks = query_faiss(clean_query(prompt), k=3)
