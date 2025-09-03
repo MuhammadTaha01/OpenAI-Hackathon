@@ -7,7 +7,7 @@ function ChatPage() {
   const [messages, setMessages] = useState([
     {
       role: "bot",
-      text: "👋 Hi, I’m Dr. AI, your personal medicine assistant. How can I help you today?",
+      text: "👋 Hi, I’m Dr. TahAI, your personal medicine assistant. How can I help you today?",
     },
   ]);
   const [input, setInput] = useState("");
