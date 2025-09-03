@@ -3,29 +3,50 @@ import React from "react";
 
 const HomeHero = () => {
   return (
-    <section className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-black min-h-screen flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-      {/* Background Robot GIF from URL */}
-      <div className="absolute bottom-0 right-96 opacity-20 w-1/2 animate-wave">
+    <section className="relative bg-black min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      {/* Custom Animation Styles */}
+      <style>
+        {`
+          @keyframes shimmer {
+            0%, 100% { color: white; }
+            50% { color: #9ca3af; } /* Tailwind gray-400 */
+          }
+          .animate-shimmer {
+            animation: shimmer 3s ease-in-out infinite;
+          }
+        `}
+      </style>
+
+      {/* Background Decorative Circles */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 -right-32 w-[30rem] h-[30rem] bg-white/5 rounded-full blur-3xl"></div>
+
+      {/* Background Robot GIF (faded) */}
+      <div className="absolute bottom-0 right-20 opacity-10 w-1/3 animate-pulse">
         <img
           src="https://helpx.adobe.com/content/dam/help/en/adobe-character-animator/using/behavior/jcr_content/main-pars/image_1453947288/robo-walk-cycle-out-of-frame.gif"
-          alt="Waving Robot"
+          alt="AI Assistant"
           className="w-full h-auto"
         />
       </div>
 
       {/* Hero Content */}
-      <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 z-10 relative">
-        Welcome to RAG Psychiatrist
+      <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 z-10 relative tracking-tight">
+        Meet{" "}
+        <span className="animate-shimmer">Dr. TahAI</span>
       </h1>
-      <p className="text-gray-300 text-lg md:text-xl max-w-2xl mb-8 z-10 relative">
-        Your AI-powered mental health companion. Get guidance, support, and
-        personalized advice whenever you need it.
+
+      <p className="text-gray-300 text-lg md:text-xl max-w-2xl mb-10 z-10 relative leading-relaxed">
+        Your <span className="text-white font-semibold">AI-powered Medical Assistant </span>  
+        providing reliable guidance, smart health support,  
+        and personalized care anytime, anywhere.
       </p>
+
       <a
         href="/chat"
-        className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-full font-semibold transition-transform transform hover:scale-105 z-10 relative"
+        className="bg-white text-black px-8 py-4 rounded-full font-semibold tracking-wide transition-transform transform hover:scale-105 hover:bg-gray-200 z-10 relative shadow-lg"
       >
-        Start Chatting
+        Start Consultation
       </a>
     </section>
   );

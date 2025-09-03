@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
+import logo from "../Assets/logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,27 +13,37 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-black shadow-lg fixed w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex-shrink-0">
+    <nav className="bg-black/90 backdrop-blur-md shadow-lg fixed w-full z-50 transition-all duration-500">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center gap-2">
             <Link
               to="/"
-              className="text-white font-bold text-2xl cursor-pointer hover:scale-110 transition-transform duration-300"
+              className="text-white font-bold text-2xl flex items-center space-x-2 group"
             >
-              MyLogo
+              <img
+                src={logo}
+                alt="Logo"
+                className="h-12 w-12 object-contain transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110"
+              />
+              <span className="hidden sm:inline-block bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text font-extrabold">
+                Dr. TahAI
+              </span>
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex space-x-10">
             {links.map((link, idx) => (
               <Link
                 key={idx}
                 to={link.path}
-                className="text-gray-300 hover:text-white hover:scale-105 transition-all duration-300 font-medium"
+                className="relative text-gray-300 font-medium transition-all duration-300 hover:text-white group"
               >
                 {link.name}
+                {/* underline effect */}
+                <span className="absolute left-0 bottom-[-6px] w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </div>
@@ -41,10 +52,10 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+              className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white rounded-md p-2 transition"
             >
               <svg
-                className="h-6 w-6"
+                className="h-7 w-7"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -75,20 +86,23 @@ const Navbar = () => {
       <Transition
         show={isOpen}
         enter="transition ease-out duration-300 transform"
-        enterFrom="-translate-y-20 opacity-0"
+        enterFrom="-translate-y-10 opacity-0"
         enterTo="translate-y-0 opacity-100"
         leave="transition ease-in duration-200 transform"
         leaveFrom="translate-y-0 opacity-100"
-        leaveTo="-translate-y-20 opacity-0"
+        leaveTo="-translate-y-10 opacity-0"
       >
         {(ref) => (
-          <div className="md:hidden bg-gray-900">
-            <div ref={ref} className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div
+            ref={ref}
+            className="md:hidden bg-black/95 backdrop-blur-md border-t border-gray-800"
+          >
+            <div className="px-4 pt-4 pb-6 space-y-3">
               {links.map((link, idx) => (
                 <Link
                   key={idx}
                   to={link.path}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all duration-300"
+                  className="block px-3 py-2 rounded-md text-lg font-medium text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
