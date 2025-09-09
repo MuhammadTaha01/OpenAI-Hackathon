@@ -1,5 +1,8 @@
 # 🩺 CureAI – An AI Doctor for Humanity  
 
+## License
+This project is licensed under the Apache License 2.0 - see the [LICENSE](./LICENSE) file for details.
+
 [![Hackathon](https://img.shields.io/badge/OpenAI%20Hackathon-For%20Humanity-blue)](https://devpost.com)  
 [![Model](https://img.shields.io/badge/Model-gpt--oss--120b-orange)](https://huggingface.co/openai/gpt-oss-120b)  
 
